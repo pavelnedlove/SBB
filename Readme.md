@@ -4,7 +4,7 @@
 
 Based on these downloaded HTML files, you may generate an ebook by importing into [Calibre](http://calibre-ebook.com/). Or, you can simply save them anywhere as archives.
 
-Tested with Python 2.7.8
+Tested with Python 3.5.2
 
 ## Usage
 SBB.py (Sina Blog URL) (asc|desc)
@@ -27,7 +27,7 @@ Licensed under the Apache License, Version 2.0
 
 ##Change log
 
-###Feb 15, 2015
+###April 17, 2017
 
 - [ADDED] timestamp for index and articles.
 - [ADDED] sort option. Ascending by default.
@@ -38,7 +38,7 @@ Licensed under the Apache License, Version 2.0
 
 基于这些下载来的 HTML 文件，您可以借助 [Calibre](http://calibre-ebook.com/) 来生成电子书，或者当作存档。
 
-请在 Python 2.7.8 下使用。
+请在 Python 3.5.2 下使用。
 
 ## 用法
 SBB.py (新浪博客地址) (desc|asc)
@@ -61,7 +61,7 @@ Licensed under the Apache License, Version 2.0
 
 ##升级日志
 
-###2015年2月15日
+###2017年4月17日
 
 - [增加] 索引页面和文章页面增加时间戳。
 - [增加] 文章排序选项，默认按发表时间顺序排列。
