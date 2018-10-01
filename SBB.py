@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__version__ = '0.02'
+__version__ = '0.03'
 __author__  = 'Julien G. (@bfishadow)'
 
 '''
 This script will download all artcles from a specific Sina Blog.
-Based on these HTML files, you might generate an ebook by importing into Calibre.
+Based on the XML file, you might importing into blogger.
 Or simply save them anywhere as archives.
 '''
 
@@ -92,12 +92,23 @@ if strUserOrder != "desc" :
 intCounter    = 0
 strHTML4Index = ""
 
+
+#new a XML file
+strLocalFilename = "BLog_sina_user" + str(strUID) +"_2018.xml" 
+objFile = open(strLocalFilename, "wb+")
+strXML4Post = '<?xml version="1.0" encoding="UTF-8"?> \n<root>'
+objFile.write(strXML4Post.encode('utf-8'));
+objFile.close()
+
+
+
+
 for strCurrentBlogPostID in arrBlogPost :
   intCounter  = intCounter + 1
   strTargetBlogPostURL = "http://blog.sina.com.cn/s/blog_" + strCurrentBlogPostID + ".html"
   objResponse = urllib.request.urlopen(strTargetBlogPostURL)
   strPageCode = objResponse.read().decode('utf-8')
-  objResponse.close()
+  objResponse.close
 
   #Parse blog title
   strBlogPostTitle = getBetween(strPageCode, "<title>", "</title>")
@@ -112,20 +123,37 @@ for strCurrentBlogPostID in arrBlogPost :
 
   #Parse blog timestamp
   strBlogPostTime  = getBetween(strPageCode, '<span class="time SG_txtc">(', ')</span><div class="turnBoxzz">')
+  
+  #Parse blog class
+  strBlogPostClass  = getBetween(getBetween(getBetween(strPageCode, '<td class="blog_class', 'class="articalContent') ,'\n									','</td>'),'html">','</a>')
+  
+  #Parse blog tag
+  strBlogPostTag  = getBetween(getBetween(getBetween(strPageCode, 'class="blog_tag"', 'td class="blog_class') ,'</script>\n			','</td>') ,'target="_blank">','</a>')
+ 
+  
+  #Write into local XML file
+  strXML4Post = "\n <PostItem>\n <title>" + strBlogPostTitle + "</title>\n <BlogName>" + strBlogName +'</BlogName>\n <BlogClass>' + strBlogPostClass + '</BlogClass>\n<BlogTag>' + strBlogPostTag + '</BlogTag>\n<content><![CDATA[' + "\n<p>By: <em>" + strBlogName + "</em> 原文发布于：<em>" + strBlogPostTime + "</em></p>\n" + strBlogPostBody + ']]></content>\n</PostItem>\n'
+   
+  objFileArticle = open(strLocalFilename, "ab+")
+  objFileArticle.write(strXML4Post.encode('utf-8'));
+  objFileArticle.close()
 
-  #Write into local file
-  strLocalFilename = "Post_" + str(intCounter) + "_" + strCurrentBlogPostID + ".html"
-  strHTML4Post = '<html>\n<head>\n<meta charset="utf-8" />\n<title>' + strBlogPostTitle + '</title>\n<link href="http://simg.sinajs.cn/blog7style/css/conf/blog/article.css" type="text/css" rel="stylesheet" />\n</head>\n<body>\n<h2>' + strBlogPostTitle + "</h2>\n<p>By: <em>" + strBlogName + "</em> 原文发布于：<em>" + strBlogPostTime + "</em></p>\n" + strBlogPostBody + '\n<p><a href="index.html">返回目录</a></p>\n</body>\n</html>\n'
-  objFileArticle = open(strLocalFilename, "wb")
-  objFileArticle.write(strHTML4Post.encode('utf-8'));
-  objFileArticle.close
 
   strHTML4Index = strHTML4Index + '<li><a href="' + strLocalFilename + '">' + strBlogPostTitle + '</a></li>\n'
 
   print (intCounter , "/", intBlogPostCount)
+  
+
+
+strXML4Post = '</root>\n'
+objFile = open(strLocalFilename, "ab")
+objFile.write(strXML4Post.encode('utf-8'));  
+objFile.close()
+  
+
 
 strCurrentTimestamp = str(strftime("%Y-%m-%d %H:%M:%S"))
 strHTML4Index = '<html>\n<head>\n<meta charset="utf-8" />\n<title>' + strBlogName + "博客文章汇总</title>\n</head>\n<body>\n<h2>新浪博客：" + strBlogName + "</h2>\n<p>共" + str(intBlogPostCount) + "篇文章，最后更新：<em>" + strCurrentTimestamp + "</em></p>\n<ol>\n" + strHTML4Index + "\n</ol>\n</body>\n</html>\n"
-objFileIndex = open("index.html", "wb")
+objFileIndex = open( "BLog_sina_user" + strUID + "_index.html", "wb")
 objFileIndex.write(strHTML4Index.encode('utf-8'));
 objFileIndex.close
