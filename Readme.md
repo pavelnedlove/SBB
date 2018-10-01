@@ -2,7 +2,7 @@
 
 **SBB**(**S**ina **B**log **B**ook) is a script to download all artcles from a specific [Sina Blog](http://blog.sina.com.cn/) blogger.
 
-Based on these downloaded HTML files, you may generate an ebook by importing into [Calibre](http://calibre-ebook.com/). Or, you can simply save them anywhere as archives.
+Based on these downloaded XML files, you may generate an ebook by importing into [Calibre](http://calibre-ebook.com/). Or, you can simply save them anywhere as archives.
 
 Tested with Python 3.5.2
 
