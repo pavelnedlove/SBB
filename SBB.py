@@ -5,7 +5,7 @@ __version__ = '0.02'
 __author__  = 'Julien G. (@bfishadow)'
 
 '''
-This script will download all artcles from a specific Sina Blog.
+This script will download all articles from a specific Sina Blog.
 Based on these HTML files, you might generate an ebook by importing into Calibre.
 Or simply save them anywhere as archives.
 '''
@@ -31,7 +31,7 @@ try :
 except :
   strUserOrder = ""
 
-#The URL *must* start with http://blog.sina.com.cn/, otherwise the universe will be destroied XD
+#The URL *must* start with http://blog.sina.com.cn/, otherwise the universe will be destroyed XD
 if strUserInput.find("http://blog.sina.com.cn/") == -1 or len(strUserInput) <= 24 :
   print(strUsage)
   print(strUserInput)
@@ -111,13 +111,16 @@ for strCurrentBlogPostID in arrBlogPost :
   strBlogPostBody  = strBlogPostBody.replace("real_src =", "src =")
 
   #Parse blog timestamp
-  strBlogPostTime  = getBetween(strPageCode, '<span class="time SG_txtc">(', ')</span><div class="turnBoxzz">')
+  #avoid duplication, but not yet effective for the new editor of sina blog
+  strBlogPostTime  = getBetween(strPageCode, '<span class="time SG_txtc">(', ')</span>')
+  print(strBlogPostTime)
 
   #Write into local file
-  strLocalFilename = "Post_" + str(intCounter) + "_" + strCurrentBlogPostID + ".html"
+  #rename files
+  strLocalFilename = "Post_" + str(intCounter) + "_" + strBlogPostTitle + ".html"
   strHTML4Post = '<html>\n<head>\n<meta charset="utf-8" />\n<title>' + strBlogPostTitle + '</title>\n<link href="http://simg.sinajs.cn/blog7style/css/conf/blog/article.css" type="text/css" rel="stylesheet" />\n</head>\n<body>\n<h2>' + strBlogPostTitle + "</h2>\n<p>By: <em>" + strBlogName + "</em> 原文发布于：<em>" + strBlogPostTime + "</em></p>\n" + strBlogPostBody + '\n<p><a href="index.html">返回目录</a></p>\n</body>\n</html>\n'
   objFileArticle = open(strLocalFilename, "wb")
-  objFileArticle.write(strHTML4Post.encode('utf-8'));
+  objFileArticle.write(strHTML4Post.encode('utf-8'))
   objFileArticle.close
 
   strHTML4Index = strHTML4Index + '<li><a href="' + strLocalFilename + '">' + strBlogPostTitle + '</a></li>\n'
@@ -127,5 +130,5 @@ for strCurrentBlogPostID in arrBlogPost :
 strCurrentTimestamp = str(strftime("%Y-%m-%d %H:%M:%S"))
 strHTML4Index = '<html>\n<head>\n<meta charset="utf-8" />\n<title>' + strBlogName + "博客文章汇总</title>\n</head>\n<body>\n<h2>新浪博客：" + strBlogName + "</h2>\n<p>共" + str(intBlogPostCount) + "篇文章，最后更新：<em>" + strCurrentTimestamp + "</em></p>\n<ol>\n" + strHTML4Index + "\n</ol>\n</body>\n</html>\n"
 objFileIndex = open("index.html", "wb")
-objFileIndex.write(strHTML4Index.encode('utf-8'));
+objFileIndex.write(strHTML4Index.encode('utf-8'))
 objFileIndex.close
